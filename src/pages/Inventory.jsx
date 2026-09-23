@@ -1,35 +1,37 @@
 import { useMemo, useState } from 'react'
 import ProductForm from '../components/ProductForm'
 import ProductTable from '../components/ProductTable'
-import { EMPTY_PRODUCT, isLowStock } from '../utils/fields'
+import InventoryFieldsEditor from '../components/InventoryFieldsEditor'
+import StockAdjust from '../components/StockAdjust'
+import { activeFields, emptyProduct, isLowStock } from '../utils/fields'
 import { nextProductId } from '../utils/storage'
 
-export default function Inventory({ products, setProducts }) {
+export default function Inventory({ schema, onSchemaChange, products, setProducts }) {
   const [query, setQuery] = useState('')
   const [lowOnly, setLowOnly] = useState(false)
-  const [editing, setEditing] = useState(null) // null | { product, isEdit }
+  const [adding, setAdding] = useState(null) // null | new product draft
+  const [customizing, setCustomizing] = useState(false)
+  const [stocking, setStocking] = useState(null) // product whose stock is being updated
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return products.filter((p) => {
       if (lowOnly && !isLowStock(p)) return false
       if (!q) return true
-      return [p.id, p.name, p.category, p.sku, p.supplier].some((v) => v.toLowerCase().includes(q))
+      return activeFields(schema)
+        .filter((f) => f.type !== 'number')
+        .some((f) => String(p[f.key] ?? '').toLowerCase().includes(q))
     })
-  }, [products, query, lowOnly])
+  }, [products, query, lowOnly, schema])
 
   const existingIds = useMemo(() => new Set(products.map((p) => p.id)), [products])
 
   const openAdd = () =>
-    setEditing({ product: { ...EMPTY_PRODUCT, id: nextProductId(products) }, isEdit: false })
+    setAdding({ ...emptyProduct(schema), id: nextProductId(products) })
 
   const handleSave = (product) => {
-    setProducts(
-      editing.isEdit
-        ? products.map((p) => (p.id === product.id ? product : p))
-        : [...products, product]
-    )
-    setEditing(null)
+    setProducts([...products, product])
+    setAdding(null)
   }
 
   const handleDelete = (product) => {
@@ -44,7 +46,7 @@ export default function Inventory({ products, setProducts }) {
         <input
           className="search"
           type="search"
-          placeholder="Search by name, ID, SKU, category, supplier…"
+          placeholder="Search products…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
@@ -52,24 +54,46 @@ export default function Inventory({ products, setProducts }) {
           <input type="checkbox" checked={lowOnly} onChange={(e) => setLowOnly(e.target.checked)} />
           Low stock only
         </label>
+        <button className="btn" onClick={() => setCustomizing(true)}>⚙ Customize Fields</button>
         <button className="btn primary" onClick={openAdd}>+ Add Product</button>
       </div>
 
       <p className="muted">Showing {filtered.length} of {products.length} products</p>
 
       <ProductTable
+        schema={schema}
         products={filtered}
-        onEdit={(p) => setEditing({ product: p, isEdit: true })}
+        onStock={setStocking}
         onDelete={handleDelete}
       />
 
-      {editing && (
+      {adding && (
         <ProductForm
-          initial={editing.product}
-          isEdit={editing.isEdit}
+          schema={schema}
+          initial={adding}
           existingIds={existingIds}
           onSave={handleSave}
-          onCancel={() => setEditing(null)}
+          onCancel={() => setAdding(null)}
+        />
+      )}
+      {stocking && (
+        <StockAdjust
+          product={stocking}
+          onSave={(updated) => {
+            setProducts(products.map((p) => (p.id === updated.id ? updated : p)))
+            setStocking(null)
+          }}
+          onCancel={() => setStocking(null)}
+        />
+      )}
+      {customizing && (
+        <InventoryFieldsEditor
+          schema={schema}
+          onSave={async (next) => {
+            await onSchemaChange(next)
+            setCustomizing(false)
+          }}
+          onCancel={() => setCustomizing(false)}
         />
       )}
     </section>

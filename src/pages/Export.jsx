@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { exportExcel, exportJSON, importExcel, importJSON } from '../utils/fileIO'
+import { activeFields } from '../utils/fields'
 
 // Merge imported products into existing ones: same Product ID = update, new ID = add.
 function merge(existing, incoming) {
@@ -8,7 +9,7 @@ function merge(existing, incoming) {
   return [...map.values()]
 }
 
-export default function Export({ products, setProducts }) {
+export default function Export({ schema, products, setProducts }) {
   const [replace, setReplace] = useState(false)
   const [message, setMessage] = useState(null) // { type: 'ok' | 'error', text }
 
@@ -17,7 +18,7 @@ export default function Export({ products, setProducts }) {
     e.target.value = '' // allow re-importing the same file
     if (!file) return
     try {
-      const incoming = (await reader(file)).filter((p) => p.id)
+      const incoming = (await reader(file, schema)).filter((p) => p.id)
       if (incoming.length === 0) throw new Error('No products with a Product ID were found.')
       setProducts(replace ? incoming : merge(products, incoming))
       setMessage({ type: 'ok', text: `Imported ${incoming.length} products from ${file.name}.` })
@@ -41,8 +42,8 @@ export default function Export({ products, setProducts }) {
 
         <div className="card">
           <h2>Excel (.xlsx)</h2>
-          <p className="muted">Columns: Product ID, Product Name, Category, SKU, Purchase Price, Selling Price, Quantity, Minimum Stock, Supplier.</p>
-          <button className="btn primary" onClick={() => exportExcel(products)}>Export Excel</button>
+          <p className="muted">Columns: {activeFields(schema).map((f) => f.label).join(', ')}.</p>
+          <button className="btn primary" onClick={() => exportExcel(products, schema)}>Export Excel</button>
           <label className="btn file-btn">
             Import Excel
             <input type="file" accept=".xlsx,.xls" onChange={handleImport(importExcel)} hidden />

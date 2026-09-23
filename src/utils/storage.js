@@ -1,23 +1,16 @@
-import sampleProducts from '../data/sampleProducts.json'
 import { normalizeProduct } from './fields'
 
-const STORAGE_KEY = 'shop-inventory-products'
+const LEGACY_KEY = 'shop-inventory-products'
 
-export function loadProducts() {
+// Products saved in this browser before accounts existed, so they can be moved to the server once.
+export function takeLegacyProducts() {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) return JSON.parse(saved).map(normalizeProduct)
+    const saved = localStorage.getItem(LEGACY_KEY)
+    if (!saved) return []
+    localStorage.removeItem(LEGACY_KEY)
+    return JSON.parse(saved).map((p) => normalizeProduct(p))
   } catch {
-    // Corrupt or unavailable storage: fall back to sample data.
-  }
-  return sampleProducts.map(normalizeProduct)
-}
-
-export function saveProducts(products) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(products))
-  } catch {
-    // Storage full or blocked; data stays in memory for this session.
+    return []
   }
 }
 

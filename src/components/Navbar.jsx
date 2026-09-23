@@ -1,6 +1,6 @@
-const PAGES = ['Dashboard', 'Inventory', 'Export']
+const PAGES = ['Dashboard', 'Inventory', 'Forms', 'Export']
 
-export default function Navbar({ page, onChange }) {
+export default function Navbar({ page, onChange, user, onLogout }) {
   return (
     <header className="navbar">
       <h1 className="brand">📦 Shop Inventory</h1>
@@ -15,6 +15,12 @@ export default function Navbar({ page, onChange }) {
           </button>
         ))}
       </nav>
+      <div className="user-menu">
+        <button className={page === 'Account' ? 'user-btn active' : 'user-btn'} onClick={() => onChange('Account')} title="My Account">
+          👤 {user.username}{!user.email && ' ⚠'}
+        </button>
+        <button className="btn small" onClick={onLogout}>Log out</button>
+      </div>
     </header>
   )
 }

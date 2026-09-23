@@ -71,6 +71,7 @@ h1, h2 { margin: 0; }
 .stat-card.warn { background: var(--warn-bg); border-color: #fed7aa; }
 .stat-card.warn .stat-value { color: var(--warn); }
 .stat-card.good .stat-value { color: var(--good); }
+.stat-card.bad .stat-value { color: var(--danger); }
 
 /* Buttons */
 .btn {
@@ -179,7 +180,9 @@ tr.low { background: var(--warn-bg); }
   text-transform: uppercase;
   color: var(--primary);
 }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; clear: both; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+/* The legend floats (to escape fieldset legend quirks), so everything after it must clear. */
+.form-section > :not(legend) { clear: both; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-size: 0.85rem; font-weight: 500; color: var(--text); }
 .field .req { color: var(--danger); margin-left: 3px; }
@@ -231,3 +234,95 @@ tr.low { background: var(--warn-bg); }
   .form-grid { grid-template-columns: 1fr; }
   .stat-value { font-size: 1.25rem; }
 }
+
+/* Navbar user menu */
+.user-menu { display: flex; align-items: center; gap: 10px; }
+
+/* Auth + public form pages */
+.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.auth-card.wide { max-width: 560px; }
+.auth-card .brand { text-align: center; }
+.auth-card > .muted { text-align: center; margin: -8px 0 0; }
+.tabs { display: flex; background: var(--bg); border-radius: 8px; padding: 4px; gap: 4px; }
+.tab { flex: 1; border: none; background: none; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; color: var(--muted); }
+.tab.active { background: var(--surface); color: var(--text); font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); }
+.btn.block { width: 100%; padding: 11px; font-size: 0.95rem; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.form-title { font-size: 1.4rem; }
+.done { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+
+/* Shared field styling for selects/textareas */
+.field select, .field textarea {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface);
+}
+.field select:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+.filler { display: flex; flex-direction: column; gap: 14px; }
+.filler .btn.primary { align-self: flex-start; padding: 10px 20px; }
+
+/* Forms page */
+.grow { flex: 1; min-width: 0; }
+.page-title { font-size: 1.25rem; }
+.toolbar .muted { margin: 4px 0 0; }
+.form-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 8px; }
+.form-card { display: flex; flex-direction: column; gap: 6px; }
+.form-card h3 { margin: 0; font-size: 1.05rem; }
+.form-card p { margin: 0; }
+.small-text { font-size: 0.8rem; }
+.clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.card .card-actions .btn { margin: 0; }
+td.wrap { white-space: normal; min-width: 120px; max-width: 320px; }
+
+/* Form builder */
+.modal.wide { max-width: 680px; }
+.builder-list { display: flex; flex-direction: column; gap: 12px; }
+.builder-row { border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: #fcfcfd; }
+.builder-main { display: flex; gap: 12px; }
+.builder-tools { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.builder-tools .checkbox { margin: 0; }
+.add-field { margin-top: 12px; width: 100%; border-style: dashed; color: var(--primary); }
+
+@media (max-width: 600px) {
+  .builder-main { flex-direction: column; }
+  .user-menu { width: 100%; justify-content: space-between; }
+}
+.modal-body.padded { padding-top: 20px; padding-bottom: 20px; }
+.export-select { appearance: none; padding-right: 14px; }
+.export-select { font-size: 0.9rem; padding-top: 9px; padding-bottom: 9px; }
+.toggle-list { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.toggle-list .checkbox { margin: 4px 0; }
+.modal.narrow { max-width: 420px; }
+.stock-preview { display: flex; gap: 12px; align-items: center; margin-top: 14px; padding: 10px 12px; background: var(--bg); border-radius: 8px; font-size: 0.9rem; }
+.warn-text { color: var(--warn); }
+.account { max-width: 520px; }
+.account-card { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.account-card h3 { margin: 0; font-size: 1.05rem; }
+.account-card .btn.primary { align-self: flex-start; }
+.form-success { margin: 0; padding: 10px 12px; border-radius: 8px; background: #f0fdf4; border: 1px solid #bbf7d0; color: var(--good); font-size: 0.875rem; }
+.user-btn { border: none; background: none; cursor: pointer; font-size: 0.9rem; color: var(--muted); padding: 6px 8px; border-radius: 6px; }
+.user-btn:hover, .user-btn.active { background: var(--bg); color: var(--text); }
+/* Keep row actions visible when the table scrolls sideways (phones). */
+td.actions { position: sticky; right: 0; background: var(--surface); box-shadow: -6px 0 8px -6px rgba(0, 0, 0, 0.15); }
+tr.low td.actions { background: var(--warn-bg); }
