@@ -1,0 +1,7 @@
+[
+  { "id": "P001", "name": "Basmati Rice 5kg", "category": "Groceries", "sku": "GRO-RICE-5", "purchasePrice": 380, "sellingPrice": 450, "quantity": 40, "minStock": 10, "supplier": "Sri Traders" },
+  { "id": "P002", "name": "Sunflower Oil 1L", "category": "Groceries", "sku": "GRO-OIL-1", "purchasePrice": 120, "sellingPrice": 145, "quantity": 6, "minStock": 12, "supplier": "Sri Traders" },
+  { "id": "P003", "name": "Toothpaste 150g", "category": "Personal Care", "sku": "PC-TP-150", "purchasePrice": 55, "sellingPrice": 70, "quantity": 25, "minStock": 8, "supplier": "Lakshmi Distributors" },
+  { "id": "P004", "name": "Bath Soap (Pack of 4)", "category": "Personal Care", "sku": "PC-SOAP-4", "purchasePrice": 110, "sellingPrice": 140, "quantity": 3, "minStock": 5, "supplier": "Lakshmi Distributors" },
+  { "id": "P005", "name": "AA Batteries (4 pcs)", "category": "Electronics", "sku": "EL-BAT-AA4", "purchasePrice": 90, "sellingPrice": 120, "quantity": 18, "minStock": 6, "supplier": "Volt Supplies" }
+]
